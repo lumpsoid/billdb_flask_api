@@ -227,7 +227,7 @@ def download_db():
     Bill.check_unique_names()
     Bill.close_sqlite()
 
-    return send_file('./bills.db', as_attachment=True)
+    return send_file(database_path, as_attachment=True)
 
 @browser_app.route('/db/upload', methods=['GET'])
 def upload_form_render():
@@ -240,7 +240,7 @@ def upload_db():
     uploaded_file = request.files['file']
     if uploaded_file.filename != '':
         # Save the uploaded file to a specific folder
-        uploaded_file.save('./bills.db')
+        uploaded_file.save(database_path)
         return 'File successfully uploaded.'
     else:
         return 'No file selected for uploading.'
