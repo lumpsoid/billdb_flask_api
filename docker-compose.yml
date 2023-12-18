@@ -1,0 +1,11 @@
+version: '2'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "5001:5001"
+    volumes:
+      - ~/bill-data/bills.db:/app/bills.db
+    restart: unless-stopped
