@@ -1,12 +1,13 @@
 from flask import Blueprint, request, send_file
 import re
 import os
+import pkgutil
 
 from billdb import Bill, db_template, build_html_table, build_html_list
 from .config import DATABASE_PATH
 
 database_path = DATABASE_PATH
-
+module_path = pkgutil.get_loader(__name__).get_filename()
 browser_app = Blueprint('browser_app', __name__)
 
 def create_new_db():
@@ -49,11 +50,12 @@ def greet():
 
 @browser_app.route('/db/create', methods=['GET', 'POST'])
 def create_db():
+    html_file_path = os.path.join(os.path.dirname(module_path), 'htmls', 'create-confirmation.html')
     if request.method == 'GET':
         if not os.path.exists(database_path):
             create_new_db()
             return 'DB was successfully created for the first time'
-        with open('./htmls/create-confirmation.html') as f:
+        with open(html_file_path) as f:
             confirm_create = f.read()
         return confirm_create
     elif request.method == 'POST':
@@ -77,7 +79,8 @@ def create_db():
 
 @browser_app.route('/bill/form')
 def bill_form_render():
-    with open('./htmls/custom-bill-form.html') as f:
+    html_file_path = os.path.join(os.path.dirname(module_path), 'htmls', 'custom-bill-form.html')
+    with open(html_file_path) as f:
         bill_form = f.read()
     return bill_form
 
@@ -113,8 +116,9 @@ def bill():
 def from_qr():
     qr_link = request.args.get('link')
     forcefully = request.args.get('force', False)
+    html_file_path = os.path.join(os.path.dirname(module_path), 'htmls', 'paste-qr.html')
     if not qr_link:
-        with open('./htmls/paste-qr.html') as f:
+        with open(html_file_path) as f:
             clipboard_html = f.read()
         return clipboard_html
 
@@ -228,10 +232,12 @@ def download_db():
     Bill.close_sqlite()
 
     return send_file(database_path, as_attachment=True)
-
+import os
 @browser_app.route('/db/upload', methods=['GET'])
 def upload_form_render():
-    with open('./htmls/upload.html') as f:
+    html_file_path = os.path.join(os.path.dirname(module_path), 'htmls', 'upload.html')
+    print(html_file_path)
+    with open(html_file_path) as f:
         upload_html = f.read()
     return upload_html
 
