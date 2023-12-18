@@ -67,8 +67,8 @@ def post_qr():
     data = request.get_json()
 
     qr_link = data.get('link')
-    forcefully = data.get('force')
-    print(qr_link)
+    forcefully = bool(data.get('force'))
+    print(f'forcefully is {forcefully}')
 
     Bill.connect_to_sqlite(database_path)
     try:
@@ -90,7 +90,7 @@ def post_qr():
         return insert_error_respons(data, message=f"{ve}")
     Bill.close_sqlite()
 
-    if bill.dup_list and not forcefully:
+    if len(bill.dup_list) > 0 and not forcefully:
         # bill.dup_list
         return duplicates_respons(data, bill)
 
