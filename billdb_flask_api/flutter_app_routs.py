@@ -67,7 +67,7 @@ def post_qr():
     data = request.get_json()
 
     qr_link = data.get('link')
-    forcefully = bool(data.get('force'))
+    forcefully = True if data.get('force') == 'true' else False
     print(f'forcefully is {forcefully}')
 
     Bill.connect_to_sqlite(database_path)
