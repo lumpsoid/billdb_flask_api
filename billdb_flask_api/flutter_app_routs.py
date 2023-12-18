@@ -68,7 +68,6 @@ def post_qr():
 
     qr_link = data.get('link')
     forcefully = True if data.get('force') == 'true' else False
-    print(f'forcefully is {forcefully}')
 
     Bill.connect_to_sqlite(database_path)
     try:
@@ -107,7 +106,7 @@ def post_form():
     exchange_rate = data.get('exchange_rate')
     country = data.get('country')
     tags = data.get('tags')
-    forcefully = data.get('force')
+    forcefully = True if data.get('force') == 'true' else False
 
     if None in (name, date, price, currency, exchange_rate, country, tags,):
         return 'You need to provide: name, date, price, currency, exchange-rate, country, tags'
@@ -130,7 +129,7 @@ def post_form():
         return insert_error_respons(data)
     Bill.close_sqlite()
 
-    if bill.dup_list and not forcefully:
+    if len(bill.dup_list) > 0 and not forcefully:
         # bill.dup_list
         return duplicates_respons(data, bill)
     
