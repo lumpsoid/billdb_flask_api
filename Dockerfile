@@ -15,6 +15,7 @@ WORKDIR /app
 RUN touch README.md
 COPY ./billdb_flask_api /app/billdb_flask_api
 COPY ./poetry.lock ./pyproject.toml ./gunicorn_config.py /app/
+RUN touch bills.db
 
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-root --no-interaction --no-ansi

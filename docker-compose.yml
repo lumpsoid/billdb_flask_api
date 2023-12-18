@@ -7,5 +7,5 @@ services:
     ports:
       - "5001:5001"
     volumes:
-      - ~/bill-data/bills.db:/app/bills.db
+      - /home/qq/bill-data/bills.db:/app/bills.db
     restart: unless-stopped

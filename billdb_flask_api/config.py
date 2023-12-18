@@ -1,1 +1,1 @@
-DATABASE_PATH = "./bills.db"
+DATABASE_PATH = "/app/bills.db"
