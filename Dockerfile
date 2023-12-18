@@ -1,12 +1,12 @@
 # Use the official Python image as a parent image
-FROM python:alpine3.19
+FROM python:3.11-slim
 
-# Add ~/.local/bin to PATH
-# RUN echo 'export PATH=$PATH:$HOME/.local/bin' >> ~/.profile
-# RUN source ~/.profile
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE 1
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED 1
 
-RUN python3 -m pip install --user pipx
-RUN /root/.local/bin/pipx install poetry==1.2.0
+RUN python3 -m pip install poetry==1.7.1
 
 # Set the working directory in the container
 WORKDIR /app
@@ -14,14 +14,14 @@ WORKDIR /app
 # server
 RUN touch README.md
 COPY ./billdb_flask_api /app/billdb_flask_api
-COPY ./pyproject.toml /app/pyproject.toml
-COPY ./gunicorn_config.py /app/gunicorn_config.py
+COPY ./poetry.lock ./pyproject.toml ./gunicorn_config.py /app/
 
-RUN /root/.local/bin/poetry install
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-root --no-interaction --no-ansi
 
 # Expose a port if your Flask app listens on one gunicorn_config.py
 EXPOSE 5001
 
 # Run your Flask app using Gunicorn with the specified configuration
-CMD [ "/root/.local/bin/poetry", "run", "gunicorn", "--config", "gunicorn_config.py", "billdb_flask_api.app:app"]
+CMD [ "poetry", "run", "gunicorn", "--config", "gunicorn_config.py", "billdb_flask_api.app:app"]
 
