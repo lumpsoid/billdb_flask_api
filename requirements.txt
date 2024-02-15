@@ -1,0 +1,3 @@
+billdb @ git+https://github.com/lumpsoid/billdb@main
+Flask >= 3.0.0
+gunicorn >= 21.2.0
