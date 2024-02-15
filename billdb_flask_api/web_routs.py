@@ -1,17 +1,15 @@
-from flask import Blueprint, request, send_file
+from flask import Blueprint, request, send_file, current_app
 import re
 import os
 import pkgutil
 
 from billdb import Bill, db_template, build_html_table, build_html_list
-from .config import DATABASE_PATH
 
-database_path = DATABASE_PATH
 module_path = pkgutil.get_loader(__name__).get_filename()
 browser_app = Blueprint('browser_app', __name__)
 
 def create_new_db():
-    Bill.connect_to_sqlite(database_path)
+    Bill.connect_to_sqlite(current_app.config["DATABASE_PATH"])
     Bill.cursor.executescript(db_template)
     Bill.close_sqlite()
     return
@@ -50,6 +48,7 @@ def greet():
 
 @browser_app.route('/db/create', methods=['GET', 'POST'])
 def create_db():
+    database_path = current_app.config["DATABASE_PATH"]
     html_file_path = os.path.join(os.path.dirname(module_path), 'htmls', 'create-confirmation.html')
     if request.method == 'GET':
         if not os.path.exists(database_path):
@@ -96,7 +95,7 @@ def bill():
 
     if None in (name, date, price, currency, exchange_rate, country, tags,):
         return 'You need to provide: name, date, price, currency, exchange-rate, country, tags'
-
+    database_path = current_app.config["DATABASE_PATH"]
     Bill.connect_to_sqlite(database_path)
      
     bill = Bill(
@@ -121,7 +120,8 @@ def from_qr():
         with open(html_file_path) as f:
             clipboard_html = f.read()
         return clipboard_html
-
+    
+    database_path = current_app.config["DATABASE_PATH"]
     Bill.connect_to_sqlite(database_path)
 
     bill = Bill().from_qr(qr_link)
@@ -158,6 +158,7 @@ def db_search():
     country = request.args.get('cy', None)
     item = request.args.get('item', None)
 
+    database_path = current_app.config["DATABASE_PATH"]
     Bill.connect_to_sqlite(database_path)
 
     if item:
@@ -215,6 +216,7 @@ def delete_rows():
     if not bill_id:
         return 'id attribute is empty'
 
+    database_path = current_app.config["DATABASE_PATH"]
     Bill.connect_to_sqlite(database_path)
 
     if confirm is None:
@@ -227,6 +229,7 @@ def delete_rows():
 
 @browser_app.route('/db/save')
 def download_db():
+    database_path = current_app.config["DATABASE_PATH"]
     Bill.connect_to_sqlite(database_path)
     Bill.check_unique_names()
     Bill.close_sqlite()
@@ -245,6 +248,7 @@ def upload_form_render():
 def upload_db():
     uploaded_file = request.files['file']
     if uploaded_file.filename != '':
+        database_path = current_app.config["DATABASE_PATH"]
         # Save the uploaded file to a specific folder
         uploaded_file.save(database_path)
         return 'File successfully uploaded.'

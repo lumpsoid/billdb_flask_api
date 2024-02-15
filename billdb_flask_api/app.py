@@ -7,7 +7,13 @@ from billdb_flask_api.web_routs import browser_app
 
 import logging
 
-app = Flask(__name__)
+def create_app():
+    app = Flask(__name__)
+    app.config['DATABASE_PATH'] = "/app/bills.db"
+    app.register_blueprint(flutter_app)
+    app.register_blueprint(browser_app)
+    return app
+    
 
 # Configure Flask logging
 # app.logger.setLevel(logging.DEBUG)  # Set the desired logging level
@@ -20,8 +26,8 @@ app = Flask(__name__)
 # handler.setLevel(level=logging.DEBUG)  # Set the desired logging level for Flask logs
 # app.logger.addHandler(handler)
 
-app.register_blueprint(flutter_app)
-app.register_blueprint(browser_app)
+
 
 if __name__ == '__main__':
+    app = create_app()
     app.run(debug=True)

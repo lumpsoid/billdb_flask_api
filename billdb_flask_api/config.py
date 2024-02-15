@@ -1,1 +1,0 @@
-DATABASE_PATH = "/app/bills.db"

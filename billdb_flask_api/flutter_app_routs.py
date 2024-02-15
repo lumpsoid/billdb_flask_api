@@ -1,9 +1,7 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from billdb import Bill
 from .utils import get_logger
-from .config import DATABASE_PATH
 
-database_path = DATABASE_PATH
 base_path = '/api/flutter'
 
 flutter_app = Blueprint('flutter_app', __name__)
@@ -69,7 +67,7 @@ def post_qr():
     qr_link = data.get('link')
     forcefully = True if data.get('force') == 'true' else False
 
-    Bill.connect_to_sqlite(database_path)
+    Bill.connect_to_sqlite(current_app.config['DATABASE_PATH'])
     try:
         bill = Bill().from_qr(qr_link)
     except:
@@ -91,8 +89,9 @@ def post_qr():
 
     if len(bill.dup_list) > 0 and not forcefully:
         # bill.dup_list
+        logger.info('Duplicates found.')
         return duplicates_respons(data, bill)
-
+    logger.info('Successfully added.')
     return success_respons(data, bill)
 
 @flutter_app.route(f'{base_path}/form', methods=['POST'])
@@ -111,7 +110,7 @@ def post_form():
     if None in (name, date, price, currency, exchange_rate, country, tags,):
         return 'You need to provide: name, date, price, currency, exchange-rate, country, tags'
 
-    Bill.connect_to_sqlite(database_path)
+    Bill.connect_to_sqlite(current_app.config['DATABASE_PATH'])
      
     bill = Bill(
         name=name,
