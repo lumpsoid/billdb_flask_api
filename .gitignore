@@ -7,3 +7,13 @@ billdb_flask_api/__pycache__/utils.cpython-312.pyc
 billdb_flask_api/__pycache__/web_routs.cpython-312.pyc
 bills.db
 billdb_flask_api/flask.log
+billdb_flask_api/__pycache__/__init__.cpython-310.pyc
+billdb_flask_api/__pycache__/app.cpython-310.pyc
+billdb_flask_api/__pycache__/config.cpython-310.pyc
+billdb_flask_api/__pycache__/flutter_app_routs.cpython-310.pyc
+billdb_flask_api/__pycache__/utils.cpython-310.pyc
+billdb_flask_api/__pycache__/web_routs.cpython-310.pyc
+tests/__pycache__/__init__.cpython-310.pyc
+tests/__pycache__/__init__.cpython-312.pyc
+tests/__pycache__/test_app.cpython-310-pytest-8.0.0.pyc
+tests/__pycache__/test_app.cpython-312-pytest-8.0.0.pyc
