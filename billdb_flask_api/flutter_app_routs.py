@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, current_app
 from billdb import Bill
-from utils import get_logger
+from billdb_flask_api.utils import get_logger
 
 base_path = '/api/flutter'
 
