@@ -26,7 +26,7 @@ COPY ./gunicorn_config.py /app/
 
 # Expose a port if your Flask app listens on one gunicorn_config.py
 EXPOSE 5001
-
+WORKDIR /app/billdb_flask_api
 # Run your Flask app using Gunicorn with the specified configuration
-CMD [ "gunicorn", "--config", "gunicorn_config.py", "billdb_flask_api.app:app"]
+CMD [ "gunicorn", "--config", "../gunicorn_config.py", "app:create_app()"]
 
