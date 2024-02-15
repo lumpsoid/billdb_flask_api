@@ -1,3 +1,4 @@
+import importlib
 from flask import Blueprint, request, send_file, current_app
 import re
 import os
@@ -6,6 +7,7 @@ import pkgutil
 from billdb import Bill, db_template, build_html_table, build_html_list
 
 module_path = pkgutil.get_loader(__name__).get_filename()
+# module_path = importlib.util.find_spec()
 browser_app = Blueprint('browser_app', __name__)
 
 def create_new_db():
