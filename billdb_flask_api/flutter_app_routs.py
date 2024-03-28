@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, current_app
 from billdb import Bill
-from billdb_flask_api.utils import get_logger
+from utils import get_logger
 
 base_path = '/api/flutter'
 
@@ -133,3 +133,30 @@ def post_form():
         return duplicates_respons(data, bill)
     
     return success_respons(data, bill)
+
+
+@flutter_app.route(f'{base_path}/get/currencies', methods=['GET'])
+def get_currencies():
+    Bill.connect_to_sqlite(current_app.config['DATABASE_PATH'])
+
+    Bill.cursor.execute("SELECT DISTINCT currency FROM bills;")
+    currency_list = Bill.cursor.fetchall()
+    currency_list = [currency[0] for currency in currency_list]
+
+    Bill.close_sqlite()
+    return jsonify(currency_list)
+
+@flutter_app.route(f'{base_path}/get/tags', methods=['GET'])
+def get_tags():
+    Bill.connect_to_sqlite(current_app.config['DATABASE_PATH'])
+
+    Bill.cursor.execute("SELECT DISTINCT tag FROM bills WHERE dates > '2023-07-01';")
+    tag_list = Bill.cursor.fetchall()
+    tag_list_result = []
+    for tag in tag_list:
+        if tag[0] is not None and tag[0] == '':
+            continue
+        tag_list_result.append(tag[0])
+
+    Bill.close_sqlite()
+    return jsonify(tag_list_result)
