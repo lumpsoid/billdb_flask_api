@@ -135,11 +135,12 @@ def from_qr():
 
     try: 
         bill = Bill().from_qr(qr_link)
+
         if bill.dup_list and not forcefully:
             return duplicate_response(bill)
     except:
         Bill.close_sqlite()
-        return 'Error while parsing qr'
+        raise
 
     bill.update_info(
         currency = "rsd",
