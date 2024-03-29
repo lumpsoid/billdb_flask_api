@@ -21,11 +21,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # server
 RUN touch README.md
 RUN touch bills.db
-COPY ./billdb_flask_api /app/billdb_flask_api
+COPY ./billdb_flask_api /app
 COPY ./gunicorn_config.py /app/
 
 # Expose a port if your Flask app listens on one gunicorn_config.py
 EXPOSE 5001
 # Run your Flask app using Gunicorn with the specified configuration
-CMD [ "gunicorn", "--config", "gunicorn_config.py", "billdb_flask_api.app:create_app()"]
+CMD [ "gunicorn", "--config", "gunicorn_config.py", "app:app"]
 
