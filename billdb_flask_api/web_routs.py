@@ -126,7 +126,7 @@ def from_qr():
     database_path = current_app.config["DATABASE_PATH"]
     Bill.connect_to_sqlite(database_path)
 
-    bill = Bill().from_qr(qr_link)
+    bill = Bill().from_qr(qr_link, forcefully)
     bill.update_info(
         currency = "rsd",
         country = "serbia",
