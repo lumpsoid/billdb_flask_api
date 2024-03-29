@@ -36,6 +36,13 @@ def build_where(var_name, var, counter):
     statement = ''.join(statement)
     return statement
 
+def duplicate_response(bill: Bill):
+    response = '<p>finded duplicates in db ({})<br>you can add <b>FORCE</b> attribute</p>'.format(len(bill.dup_list))
+    header = ['id', 'name', 'date', 'price', 'currency', 'bill_text']
+    response += build_html_table(header, bill.dup_list)
+    return response
+
+
 @browser_app.route('/')
 def hello_world():
     return 'Working fine!'
@@ -126,7 +133,14 @@ def from_qr():
     database_path = current_app.config["DATABASE_PATH"]
     Bill.connect_to_sqlite(database_path)
 
-    bill = Bill().from_qr(qr_link, forcefully)
+    try: 
+        bill = Bill().from_qr(qr_link)
+        if bill.dup_list and not forcefully:
+            return duplicate_response(bill)
+    except:
+        Bill.close_sqlite()
+        return 'Error while parsing qr'
+
     bill.update_info(
         currency = "rsd",
         country = "serbia",
@@ -136,10 +150,7 @@ def from_qr():
     Bill.close_sqlite()
 
     if bill.dup_list and not forcefully:
-        response = '<p>finded duplicates in db ({})<br>you can add <b>FORCE</b> attribute</p>'.format(len(bill.dup_list))
-        header = ['id', 'name', 'date', 'price', 'currency', 'bill_text']
-        response += build_html_table(header, bill.dup_list)
-        return response
+        return duplicate_response(bill)
 
     response = []
     if forcefully:

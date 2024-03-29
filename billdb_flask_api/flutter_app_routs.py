@@ -69,7 +69,11 @@ def post_qr():
 
     Bill.connect_to_sqlite(current_app.config['DATABASE_PATH'])
     try:
-        bill = Bill().from_qr(qr_link, force_dup=forcefully)
+        bill = Bill().from_qr(qr_link)
+        if len(bill.dup_list) > 0 and not forcefully:
+            # bill.dup_list
+            logger.info('Duplicates found.')
+            return duplicates_respons(data, bill)
     except:
         Bill.close_sqlite()
         return parse_error_respons(data)
