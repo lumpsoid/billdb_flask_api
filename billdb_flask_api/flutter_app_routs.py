@@ -154,7 +154,11 @@ def get_currencies():
 def get_tags():
     Bill.connect_to_sqlite(current_app.config['DATABASE_PATH'])
 
-    Bill.cursor.execute("SELECT DISTINCT tag FROM bills WHERE dates > '2023-07-01';")
+    Bill.cursor.execute("""
+    SELECT DISTINCT tag FROM bills WHERE dates > '2023-07-01'
+    UNION
+    SELECT DISTINCT tag FROM items_meta;
+    """)
     tag_list = Bill.cursor.fetchall()
     tag_list_result = []
     for tag in tag_list:
